@@ -4,6 +4,7 @@
 
 # 本地打包生成的应用
 SubtitleStudio.app/
+ASR Tool.app/
 
 # Release 产物（以 GitHub Release 资产形式发布）
 dist/

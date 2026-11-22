@@ -11,7 +11,7 @@ if [[ ! -f "$BIN" ]]; then
   exit 1
 fi
 
-APP="SubtitleStudio.app"
+APP="ASR Tool.app"
 echo "==> 打包 $APP ..."
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"

@@ -9,7 +9,7 @@
 从 GitHub Releases 下载 macOS 安装包（`ASR-Tool-macOS.zip` 或 `ASR-Tool-macOS.dmg`）。应用为 ad-hoc 签名、未公证；如果 macOS 提示“无法打开，因为来自未知开发者”，可右键应用选择「打开」，或在终端执行：
 
 ```bash
-xattr -cr SubtitleStudio.app
+xattr -cr "ASR Tool.app"
 ```
 
 ## 功能
@@ -41,7 +41,7 @@ xattr -cr SubtitleStudio.app
    chmod +x build.sh
    ./build.sh
    ```
-   生成的 `SubtitleStudio.app` 位于项目根目录，双击运行。
+   生成的 `ASR Tool.app` 位于项目根目录，双击运行。
 2. 首次打开时，首页会显示 FunASR 服务状态。点击「一键安装并启动」，应用会自动创建虚拟环境、安装 `torch / torchaudio / funasr / fastapi / uvicorn / python-multipart` 并启动本地服务（默认 `http://127.0.0.1:8000/v1`）。
 3. 安装可能需要几分钟，进度和日志会显示在首页横幅和「设置」中。
 4. 在「设置」中可确认 API 地址与模型 ID（默认 `paraformer`），按需设置输出格式和语言。
