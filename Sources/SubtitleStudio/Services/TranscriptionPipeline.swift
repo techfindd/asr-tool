@@ -113,15 +113,15 @@ final class TranscriptionPipeline {
 
             var warnings: [String] = []
             if skippedChunks > 0 {
-                warnings.append("已跳过 \(skippedChunks) 个静音或过短分块")
+                warnings.append("Skipped \(skippedChunks) silent or too-short chunk(s)")
             }
             if failedChunks > 0 {
-                warnings.append("\(failedChunks) 个分块转写失败（\(firstFailure ?? "未知错误")），已跳过")
+                warnings.append("\(failedChunks) chunk(s) failed to transcribe (\(firstFailure ?? "Unknown error")); skipped")
             }
-            job.warningMessage = warnings.isEmpty ? nil : warnings.joined(separator: "；")
+            job.warningMessage = warnings.isEmpty ? nil : warnings.joined(separator: "; ")
 
             guard !segments.isEmpty else {
-                throw FunASRError.decodingFailed("转写结果为空，请检查 paraformer 是否返回分段时间戳")
+                throw FunASRError.decodingFailed("Transcription result is empty. Check whether paraformer returns segment timestamps")
             }
 
             job.status = .writing

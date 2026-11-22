@@ -1,13 +1,13 @@
 import Foundation
 
 enum JobStatus: String {
-    case pending = "等待中"
-    case queued = "排队中"
-    case extracting = "提取音频"
-    case transcribing = "转写中"
-    case writing = "生成字幕"
-    case completed = "完成"
-    case failed = "失败"
+    case pending = "Pending"
+    case queued = "Queued"
+    case extracting = "Extracting audio"
+    case transcribing = "Transcribing"
+    case writing = "Writing subtitles"
+    case completed = "Completed"
+    case failed = "Failed"
 }
 
 @MainActor

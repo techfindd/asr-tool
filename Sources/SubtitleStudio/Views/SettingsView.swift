@@ -7,10 +7,10 @@ struct SettingsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("设置")
+            Text("Settings")
                 .font(.title2.bold())
 
-            GroupBox("FunASR 服务") {
+            GroupBox("FunASR Service") {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
                         Image(systemName: serverManager.isReady ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
@@ -32,8 +32,8 @@ struct SettingsView: View {
                     }
 
                     HStack {
-                        Button("检查服务") { Task { await serverManager.check() } }
-                        Button(serverManager.isReady ? "重新启动" : "一键安装并启动") {
+                        Button("Check Service") { Task { await serverManager.check() } }
+                        Button(serverManager.isReady ? "Restart" : "Install and Start") {
                             Task {
                                 if serverManager.isReady {
                                     await serverManager.start()
@@ -67,37 +67,37 @@ struct SettingsView: View {
                         }
                     }
 
-                    Text("首次使用会安装 Python 环境、FunASR 及依赖，并启动本地 paraformer 服务。全程在本机完成。")
+                    Text("On first launch, this installs the Python environment, FunASR and its dependencies, then starts the local paraformer service. Everything runs on this machine.")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
                 .padding(8)
             }
 
-            GroupBox("接口") {
+            GroupBox("Connection") {
                 VStack(alignment: .leading, spacing: 10) {
-                    labeledField("API 地址", text: $settings.serverBaseURL,
+                    labeledField("API URL", text: $settings.serverBaseURL,
                                  placeholder: "http://127.0.0.1:8000/v1")
-                    labeledField("模型 ID", text: $settings.model, placeholder: "paraformer")
-                    Text("建议使用 paraformer，它支持分段时间戳；sensevoice 不输出时间戳，字幕会变成每块一大行。")
+                    labeledField("Model ID", text: $settings.model, placeholder: "paraformer")
+                    Text("Paraformer is recommended because it returns segment timestamps. SenseVoice does not output timestamps, which results in one long line per chunk.")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
                 .padding(8)
             }
 
-            GroupBox("转写选项") {
+            GroupBox("Transcription Options") {
                 VStack(alignment: .leading, spacing: 10) {
-                    Picker("输出格式", selection: $settings.outputFormat) {
+                    Picker("Output Format", selection: $settings.outputFormat) {
                         ForEach(OutputFormat.allCases, id: \.self) { Text($0.rawValue).tag($0) }
                     }
                     .pickerStyle(.segmented)
 
-                    labeledField("语言代码（如 zh、en，留空自动检测）", text: $settings.language,
-                                 placeholder: "留空自动检测")
+                    labeledField("Language code (e.g. zh, en; leave empty to auto-detect)", text: $settings.language,
+                                 placeholder: "Auto-detect")
 
                     HStack {
-                        Text("分块时长：\(Int(settings.chunkDuration)) 秒")
+                        Text("Chunk duration: \(Int(settings.chunkDuration)) s")
                         Slider(value: $settings.chunkDuration, in: 10...60, step: 5)
                     }
                 }
@@ -106,7 +106,7 @@ struct SettingsView: View {
 
             HStack {
                 Spacer()
-                Button("完成") { dismiss() }
+                Button("Done") { dismiss() }
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
             }

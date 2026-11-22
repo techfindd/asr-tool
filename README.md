@@ -1,84 +1,85 @@
 # ASR Tool
 
-一款 macOS 原生应用：把视频/音频文件拖进去，借助本地 FunASR `paraformer` 模型，批量输出 SRT / WebVTT 字幕。
+A native macOS app that turns video or audio files into SRT / WebVTT subtitles using a local FunASR `paraformer` model.
 
-![ASR Tool 界面](Assets/app-screenshot.png)
+![ASR Tool UI](Assets/app-screenshot.png)
 
-## 下载与安装
+## Download and Install
 
-从 GitHub Releases 下载：
+Download from GitHub Releases:
 
-- `ASR-Tool-macOS.dmg`：推荐。打开后会看到 `ASR Tool.app` 和 `Applications` 两个图标，把应用拖到 `Applications` 上即可完成安装。
-- `ASR-Tool-macOS.zip`：解压后把 `ASR Tool.app` 拖到「应用程序」文件夹。
+- `ASR-Tool-macOS.dmg` (recommended): open it, then drag `ASR Tool.app` onto the `Applications` icon.
+- `ASR-Tool-macOS.zip`: unzip it and drag `ASR Tool.app` into your Applications folder.
 
-### 打开时提示“病毒 / 无法验证开发者”
+### macOS says the app is malware / cannot verify the developer
 
-这是 macOS Gatekeeper 对**未签名公证应用**的默认拦截，不代表应用真的有病毒。本项目是本地构建、ad-hoc 签名，没有使用 Apple Developer ID 做公证。
+This is macOS Gatekeeper blocking an app that is **not signed and notarized by Apple**. It does not mean the app actually contains malware. This project is built locally with an ad-hoc signature and is not notarized with an Apple Developer ID.
 
-任选一种方法解决：
+Use any of these methods:
 
-1. 右键点击 `ASR Tool.app` → 选择「打开」→ 在弹窗里再次点击「打开」
-2. 在终端移除隔离属性：
+1. Right-click `ASR Tool.app` → Choose **Open** → Click **Open** again in the dialog.
+2. Remove the quarantine attribute from the app in Terminal:
    ```bash
    xattr -cr "/Applications/ASR Tool.app"
    ```
-   如果应用还没拖进「应用程序」，把路径改成实际位置即可。
-3. 如果是打开 DMG 时就提示，先移除 DMG 的隔离属性：
+   If the app is not in Applications yet, use its actual path instead.
+3. If the warning appears when opening the DMG, remove the quarantine attribute first:
    ```bash
    xattr -d com.apple.quarantine ~/Downloads/ASR-Tool-macOS.dmg
    ```
 
-要彻底消除这个提示，需要用 Apple Developer ID 重新签名并做公证（需要付费开发者账号）。
+To eliminate this warning completely, the app needs to be signed with an Apple Developer ID and notarized by Apple, which requires a paid developer account.
 
-## 功能
+## Features
 
-- 拖入或选择 1-n 个视频/音频文件（MP4、MOV、M4A、MP3、WAV 等）
-- 使用本地 FunASR 的 OpenAI 兼容转录接口进行语音识别，默认模型为 `paraformer`
-- 首次启动时检测 FunASR 环境，未安装可一键安装并启动服务
-- 长音频自动分块、时间戳自动拼接，结果保存为 SRT、VTT 或两者
-- 字幕保存在各源文件所在目录，文件名与源文件一致（如 `video.mp4` → `video.srt` / `video.vtt`）
-- 串行任务队列，实时查看进度和错误
+- Drag in or choose one or more video/audio files (MP4, MOV, M4A, MP3, WAV, etc.)
+- Uses a local FunASR OpenAI-compatible transcription endpoint, with `paraformer` as the default model
+- Detects the FunASR environment on first launch and offers one-click install and service startup
+- Automatically splits long audio into chunks and stitches timestamps back together
+- Exports SRT, VTT, or both
+- Saves subtitles next to each source file using the same base name (e.g. `video.mp4` → `video.srt` / `video.vtt`)
+- Serial task queue with live progress and error reporting
 
-## 环境要求
+## Requirements
 
-- macOS 13 及以上
-- Xcode 命令行工具（`xcode-select --install`）
+- macOS 13 or later
+- Xcode Command Line Tools (`xcode-select --install`)
 - Swift 5.9+
-- Python 3（`python3 -m venv` 需要）
+- Python 3 (required by `python3 -m venv`)
 
-不再需要 LM Studio。应用会把 Python 虚拟环境和依赖安装到：
+LM Studio is no longer required. The app installs the Python virtual environment and dependencies into:
 
 ```text
 ~/Library/Application Support/SubtitleStudio/
 ```
 
-## 使用步骤
+## Getting Started
 
-1. 构建应用：
+1. Build the app:
    ```bash
    chmod +x build.sh
    ./build.sh
    ```
-   生成的 `ASR Tool.app` 位于项目根目录，双击运行。
-2. 首次打开时，首页会显示 FunASR 服务状态。点击「一键安装并启动」，应用会自动创建虚拟环境、安装 `torch / torchaudio / funasr / fastapi / uvicorn / python-multipart` 并启动本地服务（默认 `http://127.0.0.1:8000/v1`）。
-3. 安装可能需要几分钟，进度和日志会显示在首页横幅和「设置」中。
-4. 在「设置」中可确认 API 地址与模型 ID（默认 `paraformer`），按需设置输出格式和语言。
-5. 把音视频文件拖入窗口（或点击「选择文件」），点击「开始转写」。
-6. 完成后点击任务行中的文件名可在 Finder 中定位字幕文件。
+   `ASR Tool.app` will appear in the project root. Double-click to run it.
+2. On first launch, the home screen shows the FunASR service status. Click **Install and Start** to create the virtual environment, install `torch / torchaudio / funasr / fastapi / uvicorn / python-multipart`, and start the local service (default: `http://127.0.0.1:8000/v1`).
+3. Installation may take a few minutes. Progress and logs are shown in the home banner and in **Settings**.
+4. In **Settings**, confirm the API URL and model ID (default: `paraformer`) and choose the output format and language if needed.
+5. Drag audio/video files into the window (or click **Choose Files**), then click **Start Transcription**.
+6. When finished, click a filename in the task row to reveal the subtitle file in Finder.
 
-## 设置说明
+## Settings
 
-| 项目 | 说明 |
+| Setting | Description |
 | --- | --- |
-| API 地址 | FunASR OpenAI 兼容服务地址，默认 `http://127.0.0.1:8000/v1` |
-| 模型 ID | 默认 `paraformer`，支持分段时间戳；`sensevoice` 不输出时间戳 |
-| 输出格式 | SRT / VTT / 两者 |
-| 语言 | 如 `zh`、`en`；留空由模型自动检测 |
-| 分块时长 | 默认 30 秒，可按机器性能调整 |
+| API URL | FunASR OpenAI-compatible service URL, default `http://127.0.0.1:8000/v1` |
+| Model ID | Default `paraformer`, which returns segment timestamps; `sensevoice` does not |
+| Output Format | SRT / VTT / Both |
+| Language | For example `zh` or `en`; leave empty to auto-detect |
+| Chunk Duration | Default 30 seconds; adjust based on your machine |
 
-## 手动安装（可选）
+## Manual Installation (Optional)
 
-如果想自己在终端安装和启动服务：
+To install and start the service yourself:
 
 ```bash
 python3.11 -m venv ~/.funasr-venv
@@ -87,26 +88,26 @@ python -m pip install torch torchaudio funasr fastapi uvicorn python-multipart
 funasr-server --host 127.0.0.1 --port 8000 --model paraformer --device cpu
 ```
 
-然后在应用设置里把 API 地址填为 `http://127.0.0.1:8000/v1`。
+Then set the API URL in the app to `http://127.0.0.1:8000/v1`.
 
-## 项目结构
+## Project Structure
 
 ```
 .
-├── Assets/                     应用图标素材（AppIcon.icns 等）
+├── Assets/                     App icon and screenshot assets
 ├── Sources/SubtitleStudio/
-│   ├── App/                    应用入口
-│   ├── Models/                 设置、任务、API 数据模型
-│   ├── Services/               音频提取、分块、FunASR 客户端、服务管理、字幕生成、处理队列
-│   ├── Utils/                  WAV 工具
-│   └── Views/                  主窗口、设置面板、任务行
-├── build.sh                    构建并打包 .app
-└── Package.swift               Swift Package 描述
+│   ├── App/                    App entry point
+│   ├── Models/                 Settings, jobs, and API data models
+│   ├── Services/               Audio extraction, chunking, FunASR client, service manager, subtitle writing, job queue
+│   ├── Utils/                  WAV utilities
+│   └── Views/                  Main window, settings panel, job rows
+├── build.sh                    Build and package the .app
+└── Package.swift               Swift Package manifest
 ```
 
-## 常见问题
+## Troubleshooting
 
-- **提示「文件中没有音轨」**：源文件是纯视频无音轨，或格式不受 macOS 解码支持。
-- **首页显示 FunASR 未就绪**：点击「一键安装并启动」；如果失败，在设置中查看日志。
-- **转写结果是一整段文字**：模型可能不支持时间戳，请把模型 ID 改为 `paraformer`。
-- **想使用远程 FunASR 服务**：在设置中把 API 地址改为对应地址即可。
+- **"No audio track found in file"**: the source file has no audio track, or its format is not supported by macOS decoding.
+- **The home screen says FunASR is not ready**: click **Install and Start**. If it fails, check the log in **Settings**.
+- **The transcription result is one long paragraph**: the model may not return timestamps. Set the model ID to `paraformer`.
+- **Using a remote FunASR service**: just change the API URL in **Settings**.

@@ -5,7 +5,7 @@ enum AudioChunkerError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidWAV: return "音频文件不是有效的 WAV 格式"
+        case .invalidWAV: return "The audio file is not a valid WAV file"
         }
     }
 }

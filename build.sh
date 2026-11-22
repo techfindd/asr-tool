@@ -2,17 +2,17 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-echo "==> 编译 Release 版本..."
+echo "==> Building Release..."
 swift build -c release
 
 BIN=".build/release/SubtitleStudio"
 if [[ ! -f "$BIN" ]]; then
-  echo "错误：找不到构建产物 $BIN" >&2
+  echo "Error: build artifact not found at $BIN" >&2
   exit 1
 fi
 
 APP="ASR Tool.app"
-echo "==> 打包 $APP ..."
+echo "==> Packaging $APP ..."
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"
 mkdir -p "$APP/Contents/Resources"
@@ -26,7 +26,7 @@ cat > "$APP/Contents/Info.plist" <<'EOF'
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleDevelopmentRegion</key><string>zh_CN</string>
+    <key>CFBundleDevelopmentRegion</key><string>en</string>
     <key>CFBundleExecutable</key><string>SubtitleStudio</string>
     <key>CFBundleIdentifier</key><string>com.local.asrtool</string>
     <key>CFBundleName</key><string>ASR Tool</string>
@@ -41,5 +41,5 @@ cat > "$APP/Contents/Info.plist" <<'EOF'
 </plist>
 EOF
 
-echo "==> 完成：$PWD/$APP"
-echo "双击即可运行，也可将其拖入「应用程序」文件夹。"
+echo "==> Done: $PWD/$APP"
+echo "Double-click to run, or drag it into Applications."

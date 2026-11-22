@@ -7,13 +7,13 @@ enum FunASRError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidURL(let url): return "无效的 API 地址：\(url)"
+        case .invalidURL(let url): return "Invalid API URL: \(url)"
         case .requestFailed(415, let msg):
-            return "请求失败 (415)：FunASR 服务没有收到正确的音频格式。原始响应：\(msg)"
+            return "Request failed (415): The FunASR service did not receive the expected audio format. Response: \(msg)"
         case .requestFailed(404, let msg):
-            return "请求失败 (404)：找不到 /v1/audio/transcriptions，请确认已启动 funasr-server。原始响应：\(msg)"
-        case .requestFailed(let code, let msg): return "请求失败 (\(code))：\(msg)"
-        case .decodingFailed(let msg): return "响应解析失败：\(msg)"
+            return "Request failed (404): /v1/audio/transcriptions not found. Make sure funasr-server is running. Response: \(msg)"
+        case .requestFailed(let code, let msg): return "Request failed (\(code)): \(msg)"
+        case .decodingFailed(let msg): return "Response decoding failed: \(msg)"
         }
     }
 }

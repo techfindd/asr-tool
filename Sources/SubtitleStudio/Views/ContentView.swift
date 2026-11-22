@@ -19,13 +19,13 @@ struct ContentView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("ASR Tool")
                         .font(.title2.bold())
-                    Text("基于 FunASR Paraformer 的本地音视频转字幕工具")
+                    Text("Local audio/video to subtitle tool powered by FunASR Paraformer")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
                 Button { showingSettings = true } label: {
-                    Label("设置", systemImage: "gear")
+                    Label("Settings", systemImage: "gear")
                 }
             }
             .padding(.horizontal)
@@ -38,7 +38,7 @@ struct ContentView: View {
                         Text(serverManager.status)
                             .font(.caption)
                         Spacer()
-                        Button(serverManager.isBusy ? "处理中…" : "一键安装并启动") {
+                        Button(serverManager.isBusy ? "Working…" : "Install and Start") {
                             Task { await serverManager.installAndStart() }
                         }
                         .buttonStyle(.borderedProminent)
@@ -64,25 +64,25 @@ struct ContentView: View {
 
             HStack {
                 Button { openFilePicker() } label: {
-                    Label("选择文件", systemImage: "folder")
+                    Label("Choose Files", systemImage: "folder")
                 }
                 Button(role: .destructive) {
                     pipeline.cancelAll()
                     jobs.removeAll()
                 } label: {
-                    Label("清空列表", systemImage: "trash")
+                    Label("Clear List", systemImage: "trash")
                 }
                 .disabled(jobs.isEmpty)
 
                 Spacer()
 
-                Text(settings.model.isEmpty ? "未选择模型" : "模型：\(settings.model)")
+                Text(settings.model.isEmpty ? "No model selected" : "Model: \(settings.model)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
 
                 Button { startTranscription() } label: {
-                    Label("开始转写", systemImage: "play.fill")
+                    Label("Start Transcription", systemImage: "play.fill")
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(pendingCount == 0 || settings.model.isEmpty || !serverManager.isReady)
@@ -91,7 +91,7 @@ struct ContentView: View {
 
             List {
                 if jobs.isEmpty {
-                    Text("暂无任务，拖入文件后将显示在这里")
+                    Text("No tasks yet. Drop files here to get started.")
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(.vertical, 40)
@@ -126,9 +126,9 @@ struct ContentView: View {
                     Image(systemName: "waveform.and.movie")
                         .font(.system(size: 38))
                         .foregroundStyle(.secondary)
-                    Text("拖入视频或音频文件")
+                    Text("Drop video or audio files here")
                         .font(.headline)
-                    Text("支持 MP4、MOV、M4A、MP3、WAV 等格式，可同时拖入多个文件")
+                    Text("Supports MP4, MOV, M4A, MP3, WAV and more. You can drop multiple files at once.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

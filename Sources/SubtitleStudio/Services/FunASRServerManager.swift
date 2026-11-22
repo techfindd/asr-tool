@@ -6,7 +6,7 @@ final class FunASRServerManager: ObservableObject {
 
     @Published private(set) var isReady = false
     @Published private(set) var isBusy = false
-    @Published private(set) var status = "尚未检查"
+    @Published private(set) var status = "Not checked yet"
     @Published private(set) var stage = ""
     @Published private(set) var progress: Double = 0
     @Published var log = ""
@@ -29,20 +29,20 @@ final class FunASRServerManager: ObservableObject {
     }
 
     func check() async {
-        status = "正在检查 FunASR 服务…"
+        status = "Checking FunASR service…"
         let running = await isServerReachable()
         isReady = running
         if running {
-            status = "FunASR 服务已就绪"
-            stage = "服务已就绪"
+            status = "FunASR service is ready"
+            stage = "Service ready"
             progress = 1
         } else if isInstalled {
-            status = "FunASR 已安装，但服务未启动"
-            stage = "服务未启动"
+            status = "FunASR is installed, but the service is not running"
+            stage = "Service not running"
             progress = 0
         } else {
-            status = "FunASR 未安装"
-            stage = "等待安装"
+            status = "FunASR is not installed"
+            stage = "Waiting for installation"
             progress = 0
         }
     }
@@ -52,32 +52,32 @@ final class FunASRServerManager: ObservableObject {
         isBusy = true
         log = ""
         progress = 0
-        status = "正在安装 FunASR"
+        status = "Installing FunASR"
         do {
-            stage = "1/4 准备 Python 环境"
+            stage = "1/4 Preparing the Python environment"
             progress = 0.05
             try await runShell(Self.prepareScript)
 
-            stage = "2/4 更新 pip"
+            stage = "2/4 Updating pip"
             progress = 0.15
             try await runShell(Self.upgradePipScript)
 
-            stage = "3/4 安装 FunASR 及依赖（可能需要几分钟）"
+            stage = "3/4 Installing FunASR and dependencies (may take a few minutes)"
             progress = 0.25
             try await runShell(Self.installDepsScript)
             progress = 0.9
 
-            stage = "4/4 启动本地服务"
+            stage = "4/4 Starting the local service"
             progress = 0.94
             try await runShell(Self.startScript)
             try await Task.sleep(nanoseconds: 3_000_000_000)
             await check()
             progress = isReady ? 1.0 : 0.94
-            stage = isReady ? "安装完成" : "服务未能启动，请查看日志"
+            stage = isReady ? "Installation complete" : "Service failed to start. Check the log"
         } catch {
-            status = "安装失败：\(error.localizedDescription)"
-            stage = "安装失败"
-            appendLog("\n==> 失败：\(error.localizedDescription)\n")
+            status = "Installation failed: \(error.localizedDescription)"
+            stage = "Installation failed"
+            appendLog("\n==> Failed: \(error.localizedDescription)\n")
         }
         isBusy = false
     }
@@ -91,20 +91,20 @@ final class FunASRServerManager: ObservableObject {
         isBusy = true
         log = ""
         progress = 0
-        status = "正在启动 FunASR 服务…"
+        status = "Starting the FunASR service…"
         do {
-            stage = "启动本地服务"
+            stage = "Starting the local service"
             progress = 0.3
             try await runShell(Self.startScript)
             progress = 0.8
             try await Task.sleep(nanoseconds: 2_000_000_000)
             await check()
             progress = isReady ? 1.0 : 0.8
-            stage = isReady ? "服务已就绪" : "服务未能启动，请查看日志"
+            stage = isReady ? "Service ready" : "Service failed to start. Check the log"
         } catch {
-            status = "启动失败：\(error.localizedDescription)"
-            stage = "启动失败"
-            appendLog("\n==> 失败：\(error.localizedDescription)\n")
+            status = "Failed to start: \(error.localizedDescription)"
+            stage = "Startup failed"
+            appendLog("\n==> Failed: \(error.localizedDescription)\n")
         }
         isBusy = false
     }
@@ -173,7 +173,7 @@ final class FunASRServerManager: ObservableObject {
                     let error = NSError(
                         domain: "FunASRInstaller",
                         code: Int(proc.terminationStatus),
-                        userInfo: [NSLocalizedDescriptionKey: "命令执行失败（退出码 \(proc.terminationStatus)）"]
+                        userInfo: [NSLocalizedDescriptionKey: "Command failed (exit code \(proc.terminationStatus))"]
                     )
                     continuation.resume(throwing: error)
                 }
@@ -189,21 +189,21 @@ final class FunASRServerManager: ObservableObject {
     if [ ! -x "$VENV/bin/python" ]; then
       python3 -m venv "$VENV"
     fi
-    echo "==> Python 环境就绪"
+    echo "==> Python environment ready"
     """
 
     private static let upgradePipScript = """
     set -e
     VENV="$HOME/Library/Application Support/SubtitleStudio/funasr-venv"
     "$VENV/bin/python" -m pip install --upgrade pip
-    echo "==> pip 已更新"
+    echo "==> pip updated"
     """
 
     private static let installDepsScript = """
     set -e
     VENV="$HOME/Library/Application Support/SubtitleStudio/funasr-venv"
     "$VENV/bin/python" -m pip install torch torchaudio funasr fastapi uvicorn python-multipart
-    echo "==> 依赖安装完成"
+    echo "==> Dependencies installed"
     """
 
     private static let startScript = """
@@ -211,11 +211,11 @@ final class FunASRServerManager: ObservableObject {
     SUPPORT="$HOME/Library/Application Support/SubtitleStudio"
     VENV="$SUPPORT/funasr-venv"
     if [ ! -x "$VENV/bin/funasr-server" ]; then
-      echo "找不到 funasr-server，请先安装" >&2
+      echo "funasr-server not found. Install it first" >&2
       exit 2
     fi
     nohup "$VENV/bin/funasr-server" --host 127.0.0.1 --port 8000 --model paraformer --device cpu > "$SUPPORT/funasr-server.log" 2>&1 &
     echo $! > "$SUPPORT/funasr-server.pid"
-    echo "==> 服务已启动"
+    echo "==> Service started"
     """
 }

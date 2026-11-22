@@ -8,9 +8,9 @@ enum AudioExtractionError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .noAudioTrack(let name): return "文件中没有音轨：\(name)"
-        case .readerFailed(let msg): return "音频读取失败：\(msg)"
-        case .emptyAudio: return "未能提取到音频数据"
+        case .noAudioTrack(let name): return "No audio track found in file: \(name)"
+        case .readerFailed(let msg): return "Audio read failed: \(msg)"
+        case .emptyAudio: return "No audio data could be extracted"
         }
     }
 }
@@ -38,7 +38,7 @@ struct AudioExtractor {
         reader.add(trackOutput)
 
         guard reader.startReading() else {
-            throw AudioExtractionError.readerFailed(reader.error?.localizedDescription ?? "未知错误")
+            throw AudioExtractionError.readerFailed(reader.error?.localizedDescription ?? "Unknown error")
         }
 
         var pcmData = Data()
@@ -58,7 +58,7 @@ struct AudioExtractor {
         }
 
         if reader.status == .failed {
-            throw AudioExtractionError.readerFailed(reader.error?.localizedDescription ?? "未知错误")
+            throw AudioExtractionError.readerFailed(reader.error?.localizedDescription ?? "Unknown error")
         }
         guard !pcmData.isEmpty else { throw AudioExtractionError.emptyAudio }
 
