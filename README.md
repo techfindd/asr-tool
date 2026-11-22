@@ -4,6 +4,14 @@
 
 ![ASR Tool 界面](Assets/app-screenshot.png)
 
+## 下载
+
+从 GitHub Releases 下载 macOS 安装包（`ASR-Tool-macOS.zip` 或 `ASR-Tool-macOS.dmg`）。应用为 ad-hoc 签名、未公证；如果 macOS 提示“无法打开，因为来自未知开发者”，可右键应用选择「打开」，或在终端执行：
+
+```bash
+xattr -cr SubtitleStudio.app
+```
+
 ## 功能
 
 - 拖入或选择 1-n 个视频/音频文件（MP4、MOV、M4A、MP3、WAV 等）
