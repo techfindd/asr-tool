@@ -4,13 +4,31 @@
 
 ![ASR Tool 界面](Assets/app-screenshot.png)
 
-## 下载
+## 下载与安装
 
-从 GitHub Releases 下载 macOS 安装包（`ASR-Tool-macOS.zip` 或 `ASR-Tool-macOS.dmg`）。应用为 ad-hoc 签名、未公证；如果 macOS 提示“无法打开，因为来自未知开发者”，可右键应用选择「打开」，或在终端执行：
+从 GitHub Releases 下载：
 
-```bash
-xattr -cr "ASR Tool.app"
-```
+- `ASR-Tool-macOS.dmg`：推荐。打开后会看到 `ASR Tool.app` 和 `Applications` 两个图标，把应用拖到 `Applications` 上即可完成安装。
+- `ASR-Tool-macOS.zip`：解压后把 `ASR Tool.app` 拖到「应用程序」文件夹。
+
+### 打开时提示“病毒 / 无法验证开发者”
+
+这是 macOS Gatekeeper 对**未签名公证应用**的默认拦截，不代表应用真的有病毒。本项目是本地构建、ad-hoc 签名，没有使用 Apple Developer ID 做公证。
+
+任选一种方法解决：
+
+1. 右键点击 `ASR Tool.app` → 选择「打开」→ 在弹窗里再次点击「打开」
+2. 在终端移除隔离属性：
+   ```bash
+   xattr -cr "/Applications/ASR Tool.app"
+   ```
+   如果应用还没拖进「应用程序」，把路径改成实际位置即可。
+3. 如果是打开 DMG 时就提示，先移除 DMG 的隔离属性：
+   ```bash
+   xattr -d com.apple.quarantine ~/Downloads/ASR-Tool-macOS.dmg
+   ```
+
+要彻底消除这个提示，需要用 Apple Developer ID 重新签名并做公证（需要付费开发者账号）。
 
 ## 功能
 
