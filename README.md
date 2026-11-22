@@ -2,6 +2,8 @@
 
 一款 macOS 原生应用：把视频/音频文件拖进去，借助本地 FunASR `paraformer` 模型，批量输出 SRT / WebVTT 字幕。
 
+![ASR Tool 界面](Assets/app-screenshot.png)
+
 ## 功能
 
 - 拖入或选择 1-n 个视频/音频文件（MP4、MOV、M4A、MP3、WAV 等）
